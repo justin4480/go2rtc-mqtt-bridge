@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  go2rtc2mqtt:
+    build: .
+    container_name: go2rtc2mqtt
+    restart: unless-stopped
+    environment:
+      - GO2RTC_API_URL=http://<go2rtc ip address>:1984/api/streams
+      - MQTT_TOPIC=go2rtc/streams
+      - MQTT_BROKER= # IPAddress
+      - MQTT_PORT= # Port
+      - MQTT_USER= # Username
+      - MQTT_PASS= # Password
+      - POLL_INTERVAL=30 # Seconds between API polls
+    network_mode: bridge
