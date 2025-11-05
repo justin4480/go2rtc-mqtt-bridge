@@ -91,6 +91,7 @@ class MqttPublisher:
 
     def publish(self, topic, payload):
         """Publish message to MQTT topic."""
+        logging.info(f"Publishing to topic: {topic}")
         self.client.publish(topic, payload, qos=1, retain=True)
 
 
@@ -105,7 +106,8 @@ class HADiscoveryPublisher:
 
     def publish_sensor(self, device_id, entity_id, name, state_topic, device, unit=None):
         """Publish single sensor discovery config."""
-        if entity_id in self.published:
+        unique_key = f"{device_id}_{entity_id}"
+        if unique_key in self.published:
             return
 
         config = {
@@ -119,7 +121,7 @@ class HADiscoveryPublisher:
 
         topic = f"{self.ha_prefix}/sensor/go2rtc_{device_id}/{entity_id}/config"
         self.mqtt.publish(topic, json.dumps(config))
-        self.published.add(entity_id)
+        self.published.add(unique_key)
 
     def create_device_config(self, ip):
         """Create HA device config for a tablet."""
